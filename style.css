@@ -1,0 +1,92 @@
+.bg-gray {
+  background-color: rgb(56, 56, 56);
+}
+
+.header{
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.subtitle{
+  margin-top: 15px;
+  color: #a3a3a3;
+}
+.border-custom {
+  border-color: whitesmoke;
+}
+
+.footer {
+  z-index: -999;
+  position: fixed;
+  height: 65px;
+  bottom: 0;
+  width: 100%;
+}
+
+.footer-info{
+  margin-top: 10px;
+}
+
+#dropbox-container {
+  background-color: #84828200;
+  user-select: none;
+  padding-left: 0%;
+  padding-right: 0%;
+}
+
+
+#dropbox {
+  border: 2px dashed #000000;
+  border-radius: 20px;
+  display: grid;
+  place-content: center;
+  aspect-ratio: 5;
+}
+
+
+.dropbox_warning {
+  border: 2px dashed red !important;
+}
+
+.dropbox_pass{
+  border: 2px dashed green !important;
+}
+
+.normal {
+  background-color: #414141;
+}
+
+.normal:hover{
+  background-color: #676767;
+}
+
+.dragenter {
+  background-color: #676767;
+}
+
+.info-box{
+  margin-top: 10px;
+}
+
+#dropbox-inner {
+  text-align: center;
+  color: #262626;
+  font-size: x-large;
+  margin: unset;
+  line-height: 120%;
+  color: white;
+}
+
+#secondary-action {
+  font-size: medium;
+  color: hsla(0, 0%, 60%, 1);
+}
+
+#file-bos{
+  font-size: medium;
+  color: rgb(83, 255, 123);
+}
+
+#file-content{
+  aspect-ratio: 10;
+}

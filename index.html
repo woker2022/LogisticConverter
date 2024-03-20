@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+
+<head>
+  <meta charset="UTF-8">
+  <title>物流編號轉換
+  </title>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"></script>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+  <link href="style.css" rel="stylesheet">
+  <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
+</head>
+
+<body>
+  <div class="container d-grid gap-1  text-center">
+    <div class="row header">
+      <div class="col">
+        <h1>物流編號轉換</h1>
+        <h5 class="subtitle">將新竹貨運編號轉成可匯入+1系統</h5>
+      </div>
+    </div>
+    <div class="row">
+      <div id="dropbox-container">
+        <div class="normal" id="dropbox">
+          <p id="dropbox-inner">將檔案拖曳至此<br>
+            <span id="secondary-action">或點我開啟檔案</span>
+          </p>
+          <p>
+            <span id="file-box"></span>
+          </p>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <span></span>
+    </div>
+    <div class="row ">
+      <button type="button" class="btn btn-primary" id="process-button">轉換並下載</button>
+    </div>
+    <div class="row info-box">
+      <textarea id="file-content" class="border border-custom rounded bg-gray">
+      </textarea>
+    </div>
+  </div>
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container border-top text-center">
+      <div class="footer-info">
+        <span><a href="https://woker2022.github.io/">woker2022</a> @ 2024 Just For Fun & Learning.</span>
+        <br><a href="https://www.flaticon.com/free-icons/pattern" title="pattern icons">Favicon created by Freepik - Flaticon</a>
+      </div>
+    </div>
+  </footer>
+  <!-- Footer -->
+  <script src="script.js"></script>
+
+</body>
+
+</html>
