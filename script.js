@@ -1,9 +1,27 @@
 const dropbox = document.getElementById("dropbox");
 const file_content = document.getElementById("file-content");
-var current_file = [];
+let current_file = [];
+let fileEncode = "";
+
+const byteArrayheaderTable = {
+  big5: new Uint8Array([
+    0xad, 0x71, 0xb3, 0xe6, 0xbd, 0x73, 0xb8, 0xb9, 0x2c, 0xb3, 0x66, 0xb9,
+    0x42, 0xa4, 0xbd, 0xa5, 0x71, 0x2c, 0xb3, 0x66, 0xb9, 0x42, 0xbd, 0x73,
+    0xb8, 0xb9, 0x2c, 0xa5, 0x58, 0xb3, 0x66, 0xae, 0xc9, 0xb6, 0xa1, 0x2c,
+    0xb5, 0x6f, 0xb2, 0xbc, 0xb8, 0xb9, 0xbd, 0x58, 0x0d, 0x0a,
+  ]),
+  utf8: new Uint8Array([
+    0xe8, 0xa8, 0x82, 0xe5, 0x96, 0xae, 0xe7, 0xb7, 0xa8, 0xe8, 0x99, 0x9f,
+    0x2c, 0xe8, 0xb2, 0xa8, 0xe9, 0x81, 0x8b, 0xe5, 0x85, 0xac, 0xe5, 0x8f,
+    0xb8, 0x2c, 0xe8, 0xb2, 0xa8, 0xe9, 0x81, 0x8b, 0xe7, 0xb7, 0xa8, 0xe8,
+    0x99, 0x9f, 0x2c, 0xe5, 0x87, 0xba, 0xe8, 0xb2, 0xa8, 0xe6, 0x99, 0x82,
+    0xe9, 0x96, 0x93, 0x2c, 0xe7, 0x99, 0xbc, 0xe7, 0xa5, 0xa8, 0xe8, 0x99,
+    0x9f, 0xe7, 0xa2, 0xbc, 0x0d, 0x0a,
+  ]),
+};
 
 function showFileName(file) {
-  var infoBox = document.getElementById("file-box");
+  const infoBox = document.getElementById("file-box");
   infoBox.innerText = file["name"];
 }
 
@@ -30,7 +48,15 @@ function handleFiles(files) {
 
 async function click(e) {
   const arrFileHandle = await window.showOpenFilePicker({
-    multiple: true,
+    multiple: false,
+    types: [
+      {
+        description: "CSV",
+        accept: {
+          "text/csv": [".csv"],
+        },
+      },
+    ],
   });
 
   const files = [];
@@ -91,13 +117,7 @@ document.addEventListener("paste", async (e) => {
 });
 
 async function showPreview(file) {
-  if (file.type.startsWith("image/")) {
-    // For images, create an image and append it to the `body`.
-    const img = document.createElement("img");
-    const blob = URL.createObjectURL(file);
-    img.src = blob;
-    file_content.append(img);
-  } else if (file.type.startsWith("text/")) {
+  if (file.type.startsWith("text/csv")) {
     file_content.value = await file.text();
   }
 }
@@ -107,25 +127,33 @@ async function showPreview(file) {
 const processBTN = document.getElementById("process-button");
 const papaConfig = { header: true };
 const fileReader = new FileReader();
-var csvData;
+let csvData;
 
-function readAndGenNewCSV(parsedCSV) {
-  let newCSV = [["訂單編號", "貨運公司", "貨運編號", "出貨時間", "發票號碼"]];
+function parseAndFilter2DesireStr(parsedCSV) {
+  let newStr = "";
+  let sucCount = 0;
   for (let i = 0; i < parsedCSV["data"].length; i++) {
+    let tempStr = "";
     let row_data = parsedCSV["data"][i];
     let orderNO = row_data["訂單號碼"];
     let logisticNO = row_data["十碼貨號"];
     try {
       if (orderNO.length == 16) {
-        newCSV.push([orderNO, , logisticNO, ,]);
-        console.log(orderNO.length);
+        tempStr = `${orderNO},,${logisticNO},,\n`;
+        sucCount++;
+        newStr = newStr + tempStr;
       }
     } catch (e) {
       console.warn(`第${i}筆：${orderNO}`);
     }
   }
-  console.info("轉換完成資料總數：", newCSV.length);
-  return Papa.unparse(newCSV);
+  return newStr;
+}
+
+function convertUtf8StrToBytes(strUtf) {
+  const utf8Encoder = new TextEncoder();
+  const utf8Bytes = utf8Encoder.encode(strUtf);
+  return utf8Bytes;
 }
 
 function isLegalFile(file) {
@@ -161,7 +189,12 @@ function generateFileName() {
 }
 
 function savefile(data) {
-  const blob = new Blob([data], { type: "text/csv;charset=big5" });
+  const blob = new Blob(
+    [byteArrayheaderTable[fileEncode], convertUtf8StrToBytes(data)],
+    {
+      type: "text/csv;",
+    }
+  );
   const link = document.createElement("a");
   const href = URL.createObjectURL(blob);
   let filename = generateFileName();
@@ -176,18 +209,27 @@ function savefile(data) {
   }, 15000);
 }
 
+function getEncodeConfig() {
+  var ele = document.getElementsByName("encode");
+  for (i = 0; i < ele.length; i++) {
+    if (ele[i].checked) {
+      fileEncode = ele[i].value;
+    }
+  }
+}
+
 processBTN.addEventListener("click", function () {
   fileReader.onload = function () {
     csvData = fileReader.result;
-
     let parsedData = Papa.parse(csvData, papaConfig);
+
+    getEncodeConfig();
     console.log(parsedData);
-    savefile(readAndGenNewCSV(parsedData));
+    savefile(parseAndFilter2DesireStr(parsedData));
   };
 
   if (!isLegalFile(current_file)) {
     return;
   }
-
   fileReader.readAsText(current_file);
 });
