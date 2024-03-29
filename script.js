@@ -233,3 +233,14 @@ processBTN.addEventListener("click", function () {
   }
   fileReader.readAsText(current_file);
 });
+
+
+// ==========================================================
+
+const file_input = document.getElementById("tanditional-file-input")
+
+file_input.addEventListener('change', (e) => {
+  e.target.files; // FileList object
+  current_file = e.target.files[0]; // File Object (Special Blob)
+  isLegalFile(current_file);
+});
